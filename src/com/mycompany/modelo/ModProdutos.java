@@ -8,16 +8,16 @@ package com.mycompany.modelo;
  *
  * @author sthefany.1921
  */
-public class modelo_registro1 {
+public class ModProdutos {
     private int codigo;
     private String nome;
-    private float preco;
-    private float acrescimo;
+    private double preco;
+    private double acrescimo;
 
-    public modelo_registro1() {
+    public ModProdutos() {
     }
 
-    public modelo_registro1(int codigo, String nome, float preco, float acrescimo) {
+    public ModProdutos(int codigo, String nome, float preco, float acrescimo) {
         this.codigo = codigo;
         this.nome = nome;
         this.preco = preco;
@@ -40,7 +40,7 @@ public class modelo_registro1 {
         this.nome = nome;
     }
 
-    public float getPreco() {
+    public double getPreco() {
         return preco;
     }
 
@@ -48,7 +48,7 @@ public class modelo_registro1 {
         this.preco = preco;
     }
 
-    public float getAcrescimo() {
+    public double getAcrescimo() {
         return acrescimo;
     }
 
