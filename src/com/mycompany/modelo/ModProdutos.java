@@ -9,19 +9,31 @@ package com.mycompany.modelo;
  * @author sthefany.1921
  */
 public class ModProdutos {
+    private int id;
     private int codigo;
     private String nome;
     private double preco;
     private double acrescimo;
+    private double novopreco;
 
     public ModProdutos() {
     }
 
-    public ModProdutos(int codigo, String nome, float preco, float acrescimo) {
+    public ModProdutos(int id, int codigo, String nome, double preco, double acrescimo, double novopreco) {
+        this.id = id;
         this.codigo = codigo;
         this.nome = nome;
         this.preco = preco;
         this.acrescimo = acrescimo;
+        this.novopreco = novopreco;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getCodigo() {
@@ -44,7 +56,7 @@ public class ModProdutos {
         return preco;
     }
 
-    public void setPreco(float preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
 
@@ -52,14 +64,28 @@ public class ModProdutos {
         return acrescimo;
     }
 
-    public void setAcrescimo(float acrescimo) {
+    public void setAcrescimo(double acrescimo) {
         this.acrescimo = acrescimo;
+    }
+
+    public double getNovopreco() {
+        return novopreco;
+    }
+
+    public void setNovopreco(double novopreco) {
+        this.novopreco = novopreco;
     }
 
     @Override
     public String toString() {
-        return "modelo_registro{" + "codigo=" + codigo + ", nome=" + nome + ", preco=" + preco + ", acrescimo=" + acrescimo + '}';
+        return "ModProdutos{" + "id=" + id + ", codigo=" + codigo + ", nome=" + nome + ", preco=" + preco + ", acrescimo=" + acrescimo + ", novopreco=" + novopreco + '}';
     }
+    
+    
+
+    
+
+    
     
     
     

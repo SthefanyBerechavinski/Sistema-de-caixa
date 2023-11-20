@@ -15,16 +15,17 @@ public class DaoProdutos extends BancoDeDados{
     
     private String sql;
     
-    public Boolean inserir(int codigo, String nome, double preco, double acrescimo){
+    public Boolean inserir(int id, int codigo, String nome, double preco, double acrescimo, double novopreco){
         try{
-            sql = "INSERT INTO PRODUTOS(CODIGO, NOME, PRECO, ACRESCIMO) VALUES(?, ?, ?, ?)";
+            sql = "INSERT INTO PRODUTOS(ID, CODIGO, NOME, PRECO, ACRESCIMO, NOVOPRECO) VALUES(?, ?, ?, ?, ?, ?)";
             
             setStatement(getConexao().prepareStatement(sql));
-            
-            getStatement().setInt(1, codigo);
-            getStatement().setString(2, nome);
-            getStatement().setDouble(3, preco);
-            getStatement().setDouble(4, acrescimo);
+            getStatement().setInt(1, id);
+            getStatement().setInt(2, codigo);
+            getStatement().setString(3, nome);
+            getStatement().setDouble(4, preco);
+            getStatement().setDouble(5, acrescimo);
+            getStatement().setDouble(6, novopreco);
             
             getStatement().executeUpdate();
             
@@ -36,16 +37,17 @@ public class DaoProdutos extends BancoDeDados{
         }
     
     }
-    public Boolean alterar(int codigo, String nome2, double preco2, double acrescimo2){
+    public Boolean alterar(int id, int codigo2, String nome2, double preco2, double acrescimo2, double novopreco2){
         try{
-            sql = "UPDATE PRODUTOS SET NOME = ?, PRECO = ?, ACRESCIMO = ? WHERE CODIGO = ?";
+            sql = "UPDATE PRODUTOS SET CODIGO = ?, NOME = ?, PRECO = ?, ACRESCIMO = ?, NOVOPRECO = ? WHERE ID = ?";
             
             setStatement(getConexao().prepareStatement(sql));
-            
-            getStatement().setInt(4, codigo);
-            getStatement().setString(1, nome2);
-            getStatement().setDouble(2, preco2);
-            getStatement().setDouble(3, acrescimo2);
+            getStatement().setInt(6, id);
+            getStatement().setInt(1, codigo2);
+            getStatement().setString(2, nome2);
+            getStatement().setDouble(3, preco2);
+            getStatement().setDouble(4, acrescimo2);
+            getStatement().setDouble(5, novopreco2);
             
             getStatement().executeUpdate();
             return true;
@@ -55,13 +57,13 @@ public class DaoProdutos extends BancoDeDados{
             return false;
         }
     }
-    public Boolean excluir(int codigo){
+    public Boolean excluir(int id){
         try{
-            sql = "DELETE FROM PRODUTOS WHERE CODIGO = ?";
+            sql = "DELETE FROM PRODUTOS WHERE ID = ?";
             
             setStatement(getConexao().prepareStatement(sql));
             
-            getStatement().setInt(1, codigo);
+            getStatement().setInt(1, id);
             
             getStatement().executeUpdate();
             return true;
@@ -75,10 +77,12 @@ public class DaoProdutos extends BancoDeDados{
         try{
             sql =
                 "SELECT                  " +
-                "P.CODIGO AS CODIGO      " +
-                "P.NOME AS NOME          " +
-                "P.PRECO AS PRECO        " +
-                "P.ACRESCIMO AS ACRESCIMO" +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
                 "FROM                    " +
                 "PRODUTOS P              ";
             
@@ -90,14 +94,40 @@ public class DaoProdutos extends BancoDeDados{
         }
         return getResultado();
     }
-    public ResultSet listarPorCod(int codigo){
+    public ResultSet listarPorID(int id){
         try{
             sql =
                 "SELECT                  " +
-                "P.CODIGO AS CODIGO      " +
-                "P.NOME AS NOME          " +
-                "P.PRECO AS PRECO        " +
-                "P.ACRESCIMO AS ACRESCIMO" +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
+                "FROM                    " +
+                "PRODUTOS P              " +
+                "WHERE P.ID = ?      ";
+            
+            setStatement(getConexao().prepareStatement(sql));
+            
+            getStatement().setInt(1, id);
+            
+            setResultado(getStatement().executeQuery());
+        }catch(Exception e ){
+            System.out.println(e.getMessage());
+        }
+        return getResultado();
+    }
+    public ResultSet listarPorCodigo(int codigo){
+        try{
+            sql =
+                "SELECT                  " +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
                 "FROM                    " +
                 "PRODUTOS P              " +
                 "WHERE P.CODIGO = ?      ";
@@ -116,10 +146,12 @@ public class DaoProdutos extends BancoDeDados{
         try{
             sql = 
                 "SELECT                  " +
-                "P.CODIGO AS CODIGO      " +
-                "P.NOME AS NOME          " +
-                "P.PRECO AS PRECO        " +
-                "P.ACRESCIMO AS ACRESCIMO" +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
                 "FROM                    " +
                 "PRODUTOS P              " +
                 "WHERE P.NOME = ?        ";
@@ -138,10 +170,12 @@ public class DaoProdutos extends BancoDeDados{
         try{
             sql = 
                 "SELECT                  " +
-                "P.CODIGO AS CODIGO      " +
-                "P.NOME AS NOME          " +
-                "P.PRECO AS PRECO        " +
-                "P.ACRESCIMO AS ACRESCIMO" +
+                "P.ID AS ID,             " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
                 "FROM                    " +
                 "PRODUTOS P              " +
                 "WHERE P.PRECO = ?        ";
@@ -156,14 +190,40 @@ public class DaoProdutos extends BancoDeDados{
         }
         return getResultado();
     }
+    public ResultSet listarPorAcrescimo(Double acrescimo){
+        try{
+            sql = 
+                "SELECT                  " +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
+                "FROM                    " +
+                "PRODUTOS P              " +
+                "WHERE P.ACRESCIMO = ?    ";
+            
+            setStatement(getConexao().prepareStatement(sql));
+            
+            getStatement().setDouble(1, acrescimo);
+            
+            setResultado(getStatement().executeQuery());
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return getResultado();
+    }
     public ResultSet listarPrecoMaiorQue(Double preco){
         try{
             sql = 
                 "SELECT                  " +
-                "P.CODIGO AS CODIGO      " +
-                "P.NOME AS NOME          " +
-                "P.PRECO AS PRECO        " +
-                "P.ACRESCIMO AS ACRESCIMO" +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
                 "FROM                    " +
                 "PRODUTOS P              " +
                 "WHERE P.PRECO > ?       ";
@@ -182,10 +242,12 @@ public class DaoProdutos extends BancoDeDados{
         try{
             sql = 
                 "SELECT                  " +
-                "P.CODIGO AS CODIGO      " +
-                "P.NOME AS NOME          " +
-                "P.PRECO AS PRECO        " +
-                "P.ACRESCIMO AS ACRESCIMO" +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
                 "FROM                    " +
                 "PRODUTOS P              " +
                 "WHERE P.PRECO < ?       ";
@@ -200,11 +262,12 @@ public class DaoProdutos extends BancoDeDados{
         }
         return getResultado();
     }
+    
     public int buscarProximoId(){
         int id = 0;
         
         try{
-            sql = "SELECT IFNULL(MAX(ID), 0) + 1 FROM PRODUTO";
+            sql = "SELECT IFNULL(MAX(ID), 0) + 1 FROM PRODUTOS";
             
             setStatement(getConexao().prepareStatement(sql));
             

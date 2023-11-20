@@ -15,20 +15,20 @@ import javax.swing.JOptionPane;
  *
  * @author sthefany.1921
  */
-public class Registrar extends javax.swing.JFrame {
+public class RegProdutos extends javax.swing.JFrame {
 
     /**
      * Creates new form Registrar
      */
-    public Registrar() {
+    public RegProdutos() {
         initComponents();
         
         if(!existeDadosTemporarios()){
             DaoProdutos daoProdutos = new DaoProdutos();
             
-            int codigo = daoProdutos.buscarProximoId();
-            if(codigo >= 0)
-                tfCodigo.setText(String.valueOf(codigo));
+            int id = daoProdutos.buscarProximoId();
+            if(id >= 0)
+                tfId.setText(String.valueOf(id));
             
             btnAcao.setText(Constantes.btn_salvar_text);
             btnExcluir.setVisible(false);
@@ -37,19 +37,24 @@ public class Registrar extends javax.swing.JFrame {
             btnExcluir.setVisible(true);
         }
         setLocationRelativeTo(null);
-        tfCodigo.setEditable(false);
+//        tfCodigo.setEditable(false);
+        tfId.setEnabled(false);
     }
     private Boolean existeDadosTemporarios(){        
         if(DadosTemp.tempObject instanceof ModProdutos){
+            int id = ((ModProdutos) DadosTemp.tempObject).getId();
             int codigo = ((ModProdutos) DadosTemp.tempObject).getCodigo();
             String nome = ((ModProdutos) DadosTemp.tempObject).getNome();
             Double preco = ((ModProdutos) DadosTemp.tempObject).getPreco();
             Double acrescimo = ((ModProdutos) DadosTemp.tempObject).getAcrescimo();
+            Double novopreco = ((ModProdutos) DadosTemp.tempObject).getNovopreco();
             
+            tfId.setText(String.valueOf(id));
             tfCodigo.setText(String.valueOf(codigo));
             tfNome.setText(nome);
             tfPreco.setText(String.valueOf(preco));
             tfAcrescimo.setText(String.valueOf(acrescimo));
+            tfnovovalor.setText(String.valueOf(novopreco));
             
         
             DadosTemp.tempObject = null;
@@ -62,31 +67,33 @@ public class Registrar extends javax.swing.JFrame {
     private void inserir(){
         DaoProdutos daoProdutos = new DaoProdutos();
         
-        if (daoProdutos.inserir(Integer.parseInt(tfCodigo.getText()), tfNome.getText(), Double.parseDouble(tfPreco.getText()), Double.parseDouble(tfAcrescimo.getText()))){
+        if (daoProdutos.inserir(Integer.parseInt(tfId.getText()), Integer.parseInt(tfCodigo.getText()), tfNome.getText(), Double.parseDouble(tfPreco.getText()), Double.parseDouble(tfAcrescimo.getText()), Double.parseDouble(tfnovovalor.getText()))){
             JOptionPane.showMessageDialog(null, "Produto salvo com sucesso!");
-            
-            tfCodigo.setText(String.valueOf(daoProdutos.buscarProximoId()));
+            tfId.setText(String.valueOf(daoProdutos.buscarProximoId()));
+            tfCodigo.setText("");
             tfNome.setText("");
             tfPreco.setText("");
             tfAcrescimo.setText("");
+            tfnovovalor.setText("");
         }else{
-            JOptionPane.showMessageDialog(null, "Não foi possível salvar a categoria!");
+            JOptionPane.showMessageDialog(null, "Não foi possível salvar o produto!");
         }
     }
     
     private void alterar(){
         DaoProdutos daoProdutos = new DaoProdutos();
         
-        if (daoProdutos.alterar(Integer.parseInt(tfCodigo.getText()), tfNome.getText(), Double.parseDouble(tfPreco.getText()), Double.parseDouble(tfAcrescimo.getText()))){
-            JOptionPane.showMessageDialog(null, "Categoria alterada com sucesso!");
-            
+        if (daoProdutos.alterar(Integer.parseInt(tfId.getText()),Integer.parseInt(tfCodigo.getText()), tfNome.getText(), Double.parseDouble(tfPreco.getText()), Double.parseDouble(tfAcrescimo.getText()), Double.parseDouble(tfnovovalor.getText()))){
+            JOptionPane.showMessageDialog(null, "Produto alterado com sucesso!");
+            tfId.setText("");
             tfCodigo.setText("");
             tfNome.setText("");
             tfPreco.setText("");
             tfAcrescimo.setText("");
+            tfnovovalor.setText("");
             
         }else{
-            JOptionPane.showMessageDialog(null, "Não foi possível alterar a categoria!");
+            JOptionPane.showMessageDialog(null, "Não foi possível alterar o produto!");
         }
         
         ((ListProdutos) Formularios.listProdutos).listarTodos();
@@ -97,16 +104,17 @@ public class Registrar extends javax.swing.JFrame {
     private void excluir(){
         DaoProdutos daoProdutos = new DaoProdutos();
         
-        if (daoProdutos.excluir(Integer.parseInt(tfCodigo.getText()))){
-            JOptionPane.showMessageDialog(null, "Categoria " + tfNome.getText() + " excluída com sucesso!");
-            
+        if (daoProdutos.excluir(Integer.parseInt(tfId.getText()))){
+            JOptionPane.showMessageDialog(null, "Produto " + tfNome.getText() + " excluído com sucesso!");
+            tfId.setText("");
             tfCodigo.setText("");
             tfNome.setText("");
             tfPreco.setText("");
             tfAcrescimo.setText("");
+            tfnovovalor.setText("");
             
         }else{
-            JOptionPane.showMessageDialog(null, "Não foi possível excluir a categoria!");
+            JOptionPane.showMessageDialog(null, "Não foi possível excluir o produto!");
         }
         
         ((ListProdutos) Formularios.listProdutos).listarTodos();
@@ -129,14 +137,22 @@ public class Registrar extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        tfCodigo = new javax.swing.JTextField();
         tfNome = new javax.swing.JTextField();
         tfPreco = new javax.swing.JTextField();
         tfAcrescimo = new javax.swing.JTextField();
         btnExcluir = new javax.swing.JButton();
         btnAcao = new javax.swing.JButton();
+        tfnovovalor = new javax.swing.JTextField();
+        tfCodigo = new javax.swing.JTextField();
+        tfId = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Registro");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jLabel1.setText("Registro de produtos");
 
@@ -146,7 +162,13 @@ public class Registrar extends javax.swing.JFrame {
 
         jLabel4.setText("Preço");
 
-        jLabel5.setText("Acréscimo");
+        jLabel5.setText("Acréscimo (%)");
+
+        tfAcrescimo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tfAcrescimoFocusLost(evt);
+            }
+        });
 
         btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -168,28 +190,36 @@ public class Registrar extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAcao)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel5)
+                            .addComponent(tfNome, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                             .addComponent(jLabel2)
-                            .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(tfAcrescimo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                                .addComponent(tfPreco, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(tfNome, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(203, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAcao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnExcluir)
-                        .addGap(29, 29, 29))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(tfAcrescimo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfnovovalor, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tfPreco))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnExcluir)
+                                .addGap(29, 29, 29))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(tfId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,7 +229,9 @@ public class Registrar extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(tfId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -213,12 +245,14 @@ public class Registrar extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfAcrescimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfAcrescimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfnovovalor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExcluir)
                     .addComponent(btnAcao))
-                .addGap(0, 23, Short.MAX_VALUE))
+                .addGap(0, 17, Short.MAX_VALUE))
         );
 
         pack();
@@ -228,7 +262,7 @@ public class Registrar extends javax.swing.JFrame {
         int escolha = 
                 JOptionPane.showConfirmDialog(
                         null, 
-                        "Deseja realmente excluir a cidade " + tfNome.getText() + "?");
+                        "Deseja realmente excluir o produto " + tfNome.getText() + "?");
         
         if(escolha == JOptionPane.YES_OPTION)
             excluir();
@@ -241,6 +275,21 @@ public class Registrar extends javax.swing.JFrame {
         }else if (btnAcao.getText() == Constantes.btn_alterar_text)
             alterar();
     }//GEN-LAST:event_btnAcaoActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        Formularios.regProdutos = null;
+    }//GEN-LAST:event_formWindowClosed
+
+    private void tfAcrescimoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfAcrescimoFocusLost
+        Double preco = 0.0, acrescimo = 0.0, novoValor = 0.0;
+        
+        preco = Double.valueOf(tfPreco.getText().replace(",", "."));
+        acrescimo = Double.valueOf(tfAcrescimo.getText().replace(",", "."));
+        
+        novoValor = (preco * acrescimo) + preco;
+        
+        tfnovovalor.setText(String.valueOf(novoValor));
+    }//GEN-LAST:event_tfAcrescimoFocusLost
 
     /**
      * @param args the command line arguments
@@ -259,21 +308,23 @@ public class Registrar extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Registrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegProdutos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Registrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegProdutos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Registrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegProdutos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Registrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RegProdutos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Registrar().setVisible(true);
+                new RegProdutos().setVisible(true);
             }
         });
     }
@@ -289,7 +340,9 @@ public class Registrar extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField tfAcrescimo;
     private javax.swing.JTextField tfCodigo;
+    private javax.swing.JTextField tfId;
     private javax.swing.JTextField tfNome;
     private javax.swing.JTextField tfPreco;
+    private javax.swing.JTextField tfnovovalor;
     // End of variables declaration//GEN-END:variables
 }
