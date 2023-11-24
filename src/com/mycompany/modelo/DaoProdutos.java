@@ -214,6 +214,30 @@ public class DaoProdutos extends BancoDeDados{
         }
         return getResultado();
     }
+    public ResultSet listarPorNovoPreco(Double novopreco){
+        try{
+            sql = 
+                "SELECT                  " +
+                "P.ID AS ID,              " +
+                "P.CODIGO AS CODIGO,      " +
+                "P.NOME AS NOME,          " +
+                "P.PRECO AS PRECO,        " +
+                "P.ACRESCIMO AS ACRESCIMO, " +
+                "P.NOVOPRECO AS NOVOPRECO " +
+                "FROM                    " +
+                "PRODUTOS P              " +
+                "WHERE P.NOVOPRECO = ?    ";
+            
+            setStatement(getConexao().prepareStatement(sql));
+            
+            getStatement().setDouble(1, novopreco);
+            
+            setResultado(getStatement().executeQuery());
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return getResultado();
+    }
     public ResultSet listarPrecoMaiorQue(Double preco){
         try{
             sql = 

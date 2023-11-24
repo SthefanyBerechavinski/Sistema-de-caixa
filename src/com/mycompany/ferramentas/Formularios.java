@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 public class Formularios {
     public static JFrame regProdutos;
     public static JFrame listProdutos;
+    public static JFrame prodVendidos;
     
     public static JFrame menu;
     
